@@ -5,12 +5,12 @@ import (
 	"net/http"
 
 	db "github.com/GabrielEger2/gobanq/db/sqlc"
+	"github.com/GabrielEger2/gobanq/token"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 )
 
 type createAccountRequest struct {
-	Owner    string `json:"owner" binding:"required"`
 	Currency string `json:"currency" binding:"required,currency"`
 }
 
@@ -21,8 +21,10 @@ func (server *Server) createAccount(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet("authorization_payload").(*token.Payload)
+
 	arg := db.CreateAccountParams{
-		Owner:    req.Owner,
+		Owner:    authPayload.Username,
 		Currency: req.Currency,
 		Balance:  0,
 	}
@@ -65,6 +67,13 @@ func (server *Server) getAccount(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet("authorization_payload").(*token.Payload)
+	if account.Owner != authPayload.Username {
+		err := errorResponse(err)
+		ctx.JSON(http.StatusUnauthorized, err)
+		return
+	}
+
 	ctx.JSON(http.StatusOK, account)
 }
 
@@ -80,7 +89,9 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet("authorization_payload").(*token.Payload)
 	arg := db.GetAccountsParams{
+		Owner:  authPayload.Username,
 		Limit:  req.PageSize,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}
