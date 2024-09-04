@@ -3,12 +3,16 @@ package api
 import (
 	"fmt"
 
+	_ "github.com/GabrielEger2/gobanq/docs"
+
 	db "github.com/GabrielEger2/gobanq/db/sqlc"
 	"github.com/GabrielEger2/gobanq/token"
 	"github.com/GabrielEger2/gobanq/util"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -29,6 +33,9 @@ func NewServer(config util.Config, store *db.Store) (*Server, error) {
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("currency", validCurrency)
 	}
+
+	url := ginSwagger.URL("/swagger/doc.json")
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	router.POST("/users", server.createUser)
 	router.POST("/users/login", server.loginUser)

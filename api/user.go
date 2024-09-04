@@ -31,6 +31,15 @@ func newUserResponse(user db.User) userResponse {
 	}
 }
 
+// createUser creates a new user
+// @Summary Create a new user
+// @Tags users
+// @Description create a new user with the input payload
+// @Accept json
+// @Produce json
+// @Param input body createUserRequest true "User info"
+// @Success 200 {object} userResponse
+// @router /users [post]
 func (server *Server) createUser(ctx *gin.Context) {
 	var req createUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -78,6 +87,15 @@ type loginUserResponse struct {
 	User        userResponse
 }
 
+// loginUser logs in a user
+// @Summary Login a user
+// @Tags users
+// @Description logs in a user with the input payload
+// @Accept json
+// @Produce json
+// @Param input body loginUserRequest true "User info"
+// @Success 200 {object} loginUserResponse
+// @router /users/login [post]
 func (server *Server) loginUser(ctx *gin.Context) {
 	var req loginUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {

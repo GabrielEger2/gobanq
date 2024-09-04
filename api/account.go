@@ -14,6 +14,16 @@ type createAccountRequest struct {
 	Currency string `json:"currency" binding:"required,currency"`
 }
 
+// createAccount creates a new account
+// @Summary Create a new account
+// @Tags accounts
+// @Description create a new account with the input payload
+// @Accept json
+// @Produce json
+// @Param input body createAccountRequest true "Account info"
+// @Success 200 {object} db.Account
+// @Security ApiKeyAuth
+// @Router /accounts [post]
 func (server *Server) createAccount(ctx *gin.Context) {
 	var req createAccountRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -49,6 +59,16 @@ type getAccountRequest struct {
 	ID int64 `uri:"id" binding:"required,min=1"`
 }
 
+// getAccount returns an account by its ID
+// @Summary Get an account
+// @Tags accounts
+// @Description get account by ID
+// @Accept json
+// @Produce json
+// @Param id path int true "Account ID"
+// @Success 200 {object} db.Account
+// @Security ApiKeyAuth
+// @Router /accounts/{id} [get]
 func (server *Server) getAccount(ctx *gin.Context) {
 	var req getAccountRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
@@ -82,6 +102,17 @@ type listAccountsRequest struct {
 	PageSize int32 `form:"page_size" binding:"required,min=5,max=25"`
 }
 
+// listAccounts returns a list of accounts
+// @Summary List accounts
+// @Tags accounts
+// @Description list accounts
+// @Accept json
+// @Produce json
+// @Param page_id query int true "Page ID"
+// @Param page_size query int true "Page Size"
+// @Success 200 {object} []db.Account
+// @Security ApiKeyAuth
+// @Router /accounts [get]
 func (server *Server) listAccounts(ctx *gin.Context) {
 	var req listAccountsRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
