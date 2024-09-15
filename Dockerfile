@@ -6,8 +6,8 @@ RUN go mod download
 COPY . .
 RUN go build -o main main.go
 
-# Run the Go app 
-FROM alpine AS runtime 
+# Run the Go app
+FROM alpine AS runtime
 WORKDIR /app
 COPY --from=builder /app/main .
 EXPOSE 8080

@@ -1,0 +1,9 @@
+FROM golang:alpine
+RUN apk add --no-cache git
+RUN go install github.com/githubnemo/CompileDaemon@latest
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+EXPOSE 8080
+ENTRYPOINT CompileDaemon --build="go build main.go" --command=./main --polling

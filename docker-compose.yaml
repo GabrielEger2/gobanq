@@ -4,10 +4,9 @@ services:
   api:
     build: 
       context: .
-      target: runtime
-    command: ["go", "run", "main.go"]
+      dockerfile: Dockerfile.dev
     volumes:
-      - .:/app
+      - ./:/app
     ports:
       - "8080:8080"
     depends_on:

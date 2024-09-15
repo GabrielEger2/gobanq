@@ -22,3 +22,6 @@ go.work
 
 # Environment variables file
 app.env
+
+# Compiled code
+main
