@@ -5,10 +5,10 @@ on:
     branches: [ master ]
 
 jobs:
-
   deploy:
     name: Build image
     runs-on: ubuntu-latest
+    steps:
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -17,7 +17,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-2
 
-    - name: Login in AWS ECR (Elastic Container Registry)
+    - name: Login to AWS ECR (Elastic Container Registry)
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
@@ -26,6 +26,6 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: gobanq
         IMAGE_TAG: ${{ github.sha }}
-      run:
+      run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISRTY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
